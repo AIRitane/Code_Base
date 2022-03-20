@@ -200,7 +200,6 @@ fp32 loop_fp32_constrain(fp32 Input, fp32 minValue, fp32 maxValue)
     return Input;
 }
 
-//弧度格式化为-PI~PI
 
 //角度格式化为-180~180
 fp32 theta_format(fp32 Ang)

@@ -8,9 +8,6 @@
 static CAN_TxHeaderTypeDef  can_tx_message_l;
 static uint8_t              can_send_data_l[8];
 
-
-void CAN1_CMD(int16_t motor1, int16_t motor2, int16_t motor3, int16_t motor4);
-
 void ChassisCMD(int16_t motor1, int16_t motor2, int16_t motor3, int16_t motor4)
 {
     uint32_t send_mail_box_l;

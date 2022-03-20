@@ -121,9 +121,9 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 	}
 }
 
-const motor_measure_t *GetChassisMeasure(void)
+const motor_measure_t *GetChassisMeasure(uint8_t i)
 {
-	return ChassisMotor;
+	return &ChassisMotor[i];
 }
 const motor_measure_t *GetYawMeasure(void)
 {

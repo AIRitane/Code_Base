@@ -213,7 +213,7 @@
         <Ww>
           <count>11</count>
           <WinNumber>1</WinNumber>
-          <ItemText>PTZ,0x0A</ItemText>
+          <ItemText>PTZ,0x10</ItemText>
         </Ww>
         <Ww>
           <count>12</count>
@@ -229,6 +229,16 @@
           <count>14</count>
           <WinNumber>1</WinNumber>
           <ItemText>SendBuffer,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>15</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>ChassisCtrl,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>16</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>wheel_speed,0x0A</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>

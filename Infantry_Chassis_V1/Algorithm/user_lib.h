@@ -2,7 +2,6 @@
 #define USER_LIB_H
 #include "struct_typedef.h"
 
-
 typedef __PACKED_STRUCT
 {
     fp32 input;        //��������
@@ -67,6 +66,6 @@ extern void TD_differential_tracker(TD_differential_tracker_t *TD_differential_t
 //用于过度
 extern void TD_differential_tracker_init(TD_differential_tracker_t *TD_differential_tracker_type, fp32 frame_period, const fp32 delta);
 //���ȸ�ʽ��Ϊ-PI~PI
-#define rad_format(Ang) loop_fp32_constrain((Ang), -PI, PI)
+#define rad_format(Ang) theta_format((Ang))
 
 #endif

@@ -32,7 +32,7 @@ extern Aim_t Aim;
 extern PTZ_t PTZ;
 
 void can_filter_init(void);
-const motor_measure_t *GetChassisMeasure(void);
+const motor_measure_t *GetChassisMeasure(uint8_t i);
 const motor_measure_t *GetYawMeasure(void);
 
 #endif

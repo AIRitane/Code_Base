@@ -30,6 +30,6 @@ typedef struct
 	fp32 speed;
 } motor_measure_t;
 
-extern void CAN1_CMD(int16_t motor1, int16_t motor2, int16_t motor3, int16_t motor4);
+extern void ChassisCMD(int16_t motor1, int16_t motor2, int16_t motor3, int16_t motor4);
 
 #endif

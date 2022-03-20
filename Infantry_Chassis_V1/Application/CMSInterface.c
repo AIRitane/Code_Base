@@ -2,6 +2,7 @@
 #include "gpio.h"
 #include "gpio.h"
 #include "usart.h"
+#include "ChassisTask.h"
 
 //以下几个参数起到通信频率控制的作用
 //参数单位是chassis_task的任务节拍
