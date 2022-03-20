@@ -1,3 +1,6 @@
+/*
+* 考虑到裁判系统和发送函数的不同步性，进行了同步性校准
+*/
 #include "RefereeTask.h"
 #include "main.h"
 #include "cmsis_os.h"
@@ -7,6 +10,8 @@
 #include "bsp_referee.h"
 #include "RefereeBehaviour.h"
 
+extern osThreadId CanSendHandle;
+extern osThreadId RefereeHandle;
 /**
   * @brief          单字节解包
   * @param[in]      void
@@ -39,7 +44,8 @@ void RefereeTask(void const * argument)
     while(1)
     {
         referee_unpack_fifo_data();
-
+		vTaskResume(CanSendHandle);
+		vTaskSuspend(RefereeHandle);
         osDelayUntil(&judge_task_pre_tick,5);			//5ms的解算频率
     }
 }

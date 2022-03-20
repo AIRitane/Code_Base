@@ -99,6 +99,7 @@ int main(void)
   MX_USART1_UART_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
+//  ComLedError();
 can_filter_init();
 CMS_usart_init();
 USER_CMS_init(&huart3, &CMS_Hub, &hdma_usart3_tx, &hdma_usart3_rx);
