@@ -3,6 +3,8 @@
 #include "ChassisTask.h"
 #include "main.h"
 
+extern float SupKp;
+extern uint8_t CalculCount;
 void ChassisPowerControl(ChassisCtrl_t *ChassisCtrl);
 
 #endif
