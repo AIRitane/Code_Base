@@ -8,6 +8,9 @@
 =======
 #include "math.h"
 #include "user_lib.h"
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 ChassisCtrl_t ChassisCtrl;
@@ -43,9 +46,12 @@ void ChassisTask(void const * argument)
 		ChassisContolSet();
 		ChassisControlLoop();
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 		//APP_BatteryCombineBuckBoost2();
 		
 		ChassisPowerControl(&ChassisCtrl);
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 		ChassisCMD(ChassisCtrl.Current[0], ChassisCtrl.Current[1], ChassisCtrl.Current[2], ChassisCtrl.Current[3]);
@@ -73,6 +79,9 @@ void ChassisInit()
 	BufferFunctionInit(&BufferFunctionY,200);
 	BufferFunctionInit(&BufferFunctionWZ,500);
 	
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 }
 void ChassisSetmode()
@@ -125,6 +134,9 @@ void ChassisContolSet()
 	}
 	/*-------------------------这里刹车代码待改进------------------------------------*/
 	else if(ChassisCtrl.Mode == FALLOW||
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 		ChassisCtrl.Mode == STOP)
 	{

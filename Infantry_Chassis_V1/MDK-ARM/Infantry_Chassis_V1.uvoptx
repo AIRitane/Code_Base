@@ -277,6 +277,9 @@
           <WinNumber>1</WinNumber>
           <ItemText>total_current_limit</ItemText>
         </Ww>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
       </WatchWindow1>
       <Tracepoint>
