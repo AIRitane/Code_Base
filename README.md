@@ -4,7 +4,11 @@
  * @Date: 2022-03-18 19:44:28
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
  * @LastEditTime: 2022-03-20 01:09:07
+=======
+ * @LastEditTime: 2022-03-22 21:19:18
+>>>>>>> Stashed changes
 =======
  * @LastEditTime: 2022-03-22 21:19:18
 >>>>>>> Stashed changes
@@ -73,6 +77,10 @@
 待修补：1. 串口BUG
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+下一步添加：1. 电容的自动控制逻辑
+>>>>>>> Stashed changes
+=======
 下一步添加：1. 电容的自动控制逻辑
 >>>>>>> Stashed changes
 =======

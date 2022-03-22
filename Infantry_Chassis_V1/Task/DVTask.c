@@ -9,8 +9,11 @@ void DVTask(void const * argument)
 	{
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 		osDelay(1000);
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 		/*---------------------此处有问题，一旦开启，其他串口任务祭天----------------------------------*/
