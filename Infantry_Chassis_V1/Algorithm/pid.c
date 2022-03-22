@@ -146,7 +146,7 @@ fp32 PID_calc(pid_type_def *pid, fp32 ref, fp32 set)
     }
 	else if (pid->mode == PID_ANGLE)
     {
-		pid->error[0] = rad_format(pid->error[0]);
+		pid->error[0] = theta_format(pid->error[0]);
         pid->Pout = pid->Kp * pid->error[0];
         pid->Iout += pid->Ki * pid->error[0];
         pid->Dbuf[2] = pid->Dbuf[1];

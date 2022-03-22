@@ -240,6 +240,44 @@
           <WinNumber>1</WinNumber>
           <ItemText>wheel_speed,0x0A</ItemText>
         </Ww>
+<<<<<<< Updated upstream
+=======
+        <Ww>
+          <count>17</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>SupKp</ItemText>
+        </Ww>
+        <Ww>
+          <count>18</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>BufferFunctionY,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>19</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>BufferFunctionX,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>20</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>BufferFunctionY.out/32767.f * arm_cos_f32(del/180*3.14159265358979f)</ItemText>
+        </Ww>
+        <Ww>
+          <count>21</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>ErrorAngle</ItemText>
+        </Ww>
+        <Ww>
+          <count>22</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>total_current</ItemText>
+        </Ww>
+        <Ww>
+          <count>23</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>total_current_limit</ItemText>
+        </Ww>
+>>>>>>> Stashed changes
       </WatchWindow1>
       <Tracepoint>
         <THDelay>0</THDelay>

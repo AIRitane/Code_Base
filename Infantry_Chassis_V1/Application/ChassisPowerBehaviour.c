@@ -95,6 +95,7 @@ void ChassisPowerControl(ChassisCtrl_t *ChassisCtrl)
             {
                 total_current_limit = BUFFER_TOTAL_CURRENT_LIMIT + POWER_TOTAL_CURRENT_LIMIT;
             }
+<<<<<<< Updated upstream
         }
 
    }
@@ -105,6 +106,59 @@ void ChassisPowerControl(ChassisCtrl_t *ChassisCtrl)
     for(uint8_t i = 0; i < 4; i++)
     {
         total_current += fabs(ChassisCtrl->Current[i]);
+=======
+		}
+	}
+	else if(BufferEnergy == 250)
+	{
+		if(chassis_power_buffer < BufferEnergy)
+		{
+			/*--------------------------------------待处理---------------------------------------------*/
+			TestLedError();
+		}
+		else
+		{
+			/*--------------------------------------待处理---------------------------------------------*/
+			TestLedError();
+		}
+	}
+	else 
+	{
+		BufferEnergy = 60;
+		goto PowerControlError;
+		CtrlLedError();
+	}
+}
+void GetSupKp(ChassisCtrl_t *ChassisCtrl)
+{
+	float KpW = 0,KpEi = 0;
+	
+	total_current = 0;
+	
+	for(int i=0;i<4;i++)
+		total_current += ChassisCtrl->Current[i];
+	
+	if(fabs(total_current) > total_current_limit)
+    {
+			if(ChassisCtrl->WheelSpeed[0] == 0 &&
+				ChassisCtrl->WheelSpeed[1] == 0 &&
+				ChassisCtrl->WheelSpeed[2] == 0 &&
+				ChassisCtrl->WheelSpeed[3] == 0)
+			//这种情况必须不应该出现，因为添加了缓冲函数，若出现，不管电压，直接使用超级电容
+			//即使疲软，也没办法
+			{
+				TestLedError();
+			}
+			else
+			{
+				for(int i = 0; i < 4; i++)
+				{
+					KpEi += ChassisCtrl->XYPid->Kp * ChassisCtrl->XYPid->error[0];
+					KpW += ChassisCtrl->XYPid->Kp * ChassisCtrl->WheelSpeed[i];
+				}
+			}
+		SupKp = (total_current_limit+KpEi)/KpW;
+>>>>>>> Stashed changes
     }
     
 	//缩小底盘输出电流，当超过限制电流越大，尺度缩小越明显
