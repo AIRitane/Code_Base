@@ -124,7 +124,7 @@ void MX_FREERTOS_Init(void) {
   RefereeHandle = osThreadCreate(osThread(Referee), NULL);
 
   /* definition and creation of DataVsualizatio */
-  osThreadDef(DataVsualizatio, DVTask, osPriorityLow, 0, 512);
+  osThreadDef(DataVsualizatio, DVTask, osPriorityNormal, 0, 512);
   DataVsualizatioHandle = osThreadCreate(osThread(DataVsualizatio), NULL);
 
   /* definition and creation of Communication */

@@ -23,14 +23,14 @@ typedef enum
 //	HEIGHT,
 //}Roting_Speed_e;
 
-typedef __PACKED_STRUCT
+typedef struct
 {
-    fp32 input;
-    fp32 out;
-	fp32 error;
-	fp32 buffer;
-    fp32 frame_period;
-} BufferFunction_t;
+	float frame_period;
+	float input;
+	float out;
+	float error;
+	float buffer;
+}BufferFunction_t;
 
 typedef struct
 {

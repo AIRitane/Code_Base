@@ -41,8 +41,8 @@ void ramp_init(ramp_function_source_t *ramp_source_type, fp32 frame_period, fp32
   */
 void ramp_calc(ramp_function_source_t *ramp_source_type, fp32 input)
 {
-	ramp_source_type->input = input;
-	ramp_source_type->out += ramp_source_type->input * ramp_source_type->frame_period;
+			ramp_source_type->input = input;
+			ramp_source_type->out -= ramp_source_type->input * ramp_source_type->frame_period;
 		
     if (ramp_source_type->out > ramp_source_type->max_value)
     {
@@ -52,6 +52,7 @@ void ramp_calc(ramp_function_source_t *ramp_source_type, fp32 input)
     {
         ramp_source_type->out = ramp_source_type->min_value;
     }
+    
 }
 /**
   * @brief          一阶低通滤波初始化,已更改，防止除零错误LOGOTAO版

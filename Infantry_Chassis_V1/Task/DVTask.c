@@ -1,16 +1,16 @@
 #include "cmsis_os.h"
 #include "DVTask.h"
-#include "ChassisTask.h"
-#include "ChassisPowerBehaviour.h"
 
 uint8_t u1_buf[512];
-extern ChassisCtrl_t ChassisCtrl;
+
 void DVTask(void const * argument)
 {
-	osDelay(1000);
 	while(1)
 	{
-		U1Printf_DMA("%f\n",SupKp);
+
+		osDelay(1000);
+		/*---------------------此处有问题，一旦开启，其他串口任务祭天----------------------------------*/
+		//U1Printf_DMA("%f,%f,%f\n",SupKp,total_current_limit,total_current);
 		osDelay(100);
 	}
 }

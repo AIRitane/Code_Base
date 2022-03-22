@@ -9,7 +9,6 @@
 #include "arm_math.h"
 #include "CMSInterface.h"
 
-
 //缓存功率限制内的最大总电流
 #define BUFFER_TOTAL_CURRENT_LIMIT      14000.0f
 //最大功率限制内的最大总电流
@@ -42,8 +41,8 @@ void ChassisBufferEnerge();
 void CapCharge(float Percentage);
 void ChassisReduceRate();
 void GetSupKp(ChassisCtrl_t *ChassisCtrl);
-
 void ChassisPowerControl(ChassisCtrl_t *ChassisCtrl);
+
 
 void ChassisPowerInit()
 {
@@ -57,7 +56,9 @@ void ChassisPowerInit()
 	if(remain_current<0)
 	{
 		remain_current = 0;
-	}	
+	}
+	total_current = 0;
+	total_current_limit = 0;
 }
 void ChassisBufferEnerge()
 {
@@ -95,7 +96,7 @@ void ChassisReduceRate()
 	else if(BufferEnergy == 60)
 	{
 PowerControlError:
-		if(chassis_power_buffer < BufferEnergy)
+		if(chassis_power_buffer != BufferEnergy)
 		{
 			float ReduceScale = 0;
 			if(chassis_power_buffer > 10.0f)
@@ -116,14 +117,7 @@ PowerControlError:
 			if(chassis_power > WarnPower)
             {
                 fp32 power_scale;
-                if(chassis_power < power_limit)
-                {
-                    power_scale = (power_limit - chassis_power) / (power_limit - WarnPower);
-                }
-                else
-                {
-                    power_scale = 0.0f;
-                }
+                power_scale = (power_limit - chassis_power) / (power_limit - WarnPower);
                 
                 total_current_limit = BUFFER_TOTAL_CURRENT_LIMIT + POWER_TOTAL_CURRENT_LIMIT * power_scale;
             }
@@ -135,7 +129,12 @@ PowerControlError:
 	}
 	else if(BufferEnergy == 250)
 	{
-		if(chassis_power_buffer < BufferEnergy)
+		if(chassis_power_buffer < BufferEnergy && chassis_power_buffer>60)
+		{
+			/*--------------------------------------待处理---------------------------------------------*/
+			TestLedError();
+		}
+		else if(chassis_power_buffer <60)
 		{
 			/*--------------------------------------待处理---------------------------------------------*/
 			TestLedError();
@@ -153,15 +152,17 @@ PowerControlError:
 		CtrlLedError();
 	}
 }
+
+
 void GetSupKp(ChassisCtrl_t *ChassisCtrl)
 {
 	float KpW = 0,KpEi = 0;
-	
-	total_current = 0;
-	
 	for(int i=0;i<4;i++)
-		total_current += ChassisCtrl->Current[i];
-	if(total_current > total_current_limit)
+	{
+		total_current += fabs(ChassisCtrl->Current[i]);
+	}
+		
+	if(fabs(total_current) > total_current_limit)
     {
 			if(ChassisCtrl->WheelSpeed[0] == 0 &&
 				ChassisCtrl->WheelSpeed[1] == 0 &&
@@ -180,8 +181,6 @@ void GetSupKp(ChassisCtrl_t *ChassisCtrl)
 					KpW += ChassisCtrl->XYPid->Kp * ChassisCtrl->WheelSpeed[i];
 				}
 			}
-			
-		
 		SupKp = (total_current_limit+KpEi)/KpW;
     }
 	else
@@ -189,6 +188,7 @@ void GetSupKp(ChassisCtrl_t *ChassisCtrl)
 		SupKp = 1;
 	}
 }
+
 void ChassisPowerControl(ChassisCtrl_t *ChassisCtrl)
 {
 	ChassisPowerInit();
@@ -197,4 +197,3 @@ void ChassisPowerControl(ChassisCtrl_t *ChassisCtrl)
 	ChassisReduceRate();
 	GetSupKp(ChassisCtrl);
 }
-	
