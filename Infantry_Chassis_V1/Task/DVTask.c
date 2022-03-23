@@ -7,18 +7,10 @@ void DVTask(void const * argument)
 {
 	while(1)
 	{
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+
 		osDelay(1000);
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 		/*---------------------此处有问题，一旦开启，其他串口任务祭天----------------------------------*/
 		//U1Printf_DMA("%f,%f,%f\n",SupKp,total_current_limit,total_current);
 		osDelay(100);
->>>>>>> Stashed changes
 	}
 }
