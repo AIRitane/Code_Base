@@ -3,7 +3,7 @@
 <title>Static Call Graph - [Infantry_Chassis_V1\Infantry_Chassis_V1.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image Infantry_Chassis_V1\Infantry_Chassis_V1.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6150002: Last Updated: Wed Mar 23 20:56:14 2022
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6150002: Last Updated: Thu Mar 24 20:07:47 2022
 <BR><P>
 <H3>Maximum Stack Usage =        376 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -757,6 +757,7 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[a7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PID_calc
 </UL>
 <BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ChassisTask
+<LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetSupKp
 </UL>
 
 <P><STRONG><a name="[a9]"></a>ChassisInit</STRONG> (Thumb, 224 bytes, Stack size 48 bytes, chassistask.o(.text.ChassisInit))
@@ -770,8 +771,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ChassisTask
 </UL>
 
-<P><STRONG><a name="[ae]"></a>ChassisPowerControl</STRONG> (Thumb, 32 bytes, Stack size 8 bytes, chassispowerbehaviour.o(.text.ChassisPowerControl))
-<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = ChassisPowerControl &rArr; GetSupKp
+<P><STRONG><a name="[ae]"></a>ChassisPowerControl</STRONG> (Thumb, 36 bytes, Stack size 8 bytes, chassispowerbehaviour.o(.text.ChassisPowerControl))
+<BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = ChassisPowerControl &rArr; GetSupKp &rArr; ChassisControlLoop &rArr; PID_calc &rArr; theta_format
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetSupKp
 <LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ChassisReduceRate
@@ -782,7 +783,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ChassisTask
 </UL>
 
-<P><STRONG><a name="[af]"></a>ChassisPowerInit</STRONG> (Thumb, 200 bytes, Stack size 0 bytes, chassispowerbehaviour.o(.text.ChassisPowerInit))
+<P><STRONG><a name="[af]"></a>ChassisPowerInit</STRONG> (Thumb, 188 bytes, Stack size 0 bytes, chassispowerbehaviour.o(.text.ChassisPowerInit))
 <BR><BR>[Called By]<UL><LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ChassisPowerControl
 </UL>
 
@@ -798,7 +799,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ChassisTask
 </UL>
 
-<P><STRONG><a name="[68]"></a>ChassisTask</STRONG> (Thumb, 136 bytes, Stack size 0 bytes, chassistask.o(.text.ChassisTask))
+<P><STRONG><a name="[68]"></a>ChassisTask</STRONG> (Thumb, 90 bytes, Stack size 0 bytes, chassistask.o(.text.ChassisTask))
 <BR><BR>[Stack]<UL><LI>Max Depth = 200<LI>Call Chain = ChassisTask &rArr; ChassisContolSet &rArr; BufferFunctionCalc &rArr; __hardfp_exp &rArr; __kernel_poly &rArr; __aeabi_dmul
 </UL>
 <BR>[Calls]<UL><LI><a href="#[9b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
@@ -927,10 +928,10 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ChassisInit
 </UL>
 
-<P><STRONG><a name="[b2]"></a>GetSupKp</STRONG> (Thumb, 340 bytes, Stack size 16 bytes, chassispowerbehaviour.o(.text.GetSupKp))
-<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = GetSupKp
+<P><STRONG><a name="[b2]"></a>GetSupKp</STRONG> (Thumb, 212 bytes, Stack size 16 bytes, chassispowerbehaviour.o(.text.GetSupKp))
+<BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = GetSupKp &rArr; ChassisControlLoop &rArr; PID_calc &rArr; theta_format
 </UL>
-<BR>[Calls]<UL><LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GPIO_WritePin
+<BR>[Calls]<UL><LI><a href="#[a8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ChassisControlLoop
 </UL>
 <BR>[Called By]<UL><LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ChassisPowerControl
 </UL>
@@ -1121,7 +1122,6 @@ Global Symbols
 <P><STRONG><a name="[9d]"></a>HAL_GPIO_WritePin</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, stm32f4xx_hal_gpio.o(.text.HAL_GPIO_WritePin))
 <BR><BR>[Called By]<UL><LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CanSendTask
 <LI><a href="#[10e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_GPIO_Init
-<LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GetSupKp
 <LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ChassisReduceRate
 <LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ChassisBufferEnerge
 <LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_CAN_RxFifo0MsgPendingCallback

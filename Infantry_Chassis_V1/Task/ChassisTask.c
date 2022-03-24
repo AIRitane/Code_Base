@@ -38,13 +38,8 @@ void ChassisTask(void const * argument)
 		
 		//APP_BatteryCombineBuckBoost2();
 		ChassisPowerControl(&ChassisCtrl);
-		for(int i=0;i<4;i++)
-		{
-			ChassisCtrl.WheelSpeed[i] *= SupKp;
-		}
-		ChassisControlLoop();
 		ChassisCMD(ChassisCtrl.Current[0], ChassisCtrl.Current[1], ChassisCtrl.Current[2], ChassisCtrl.Current[3]);
-		
+
 		osDelay(1);
 	}
 }
@@ -116,10 +111,11 @@ void ChassisContolSet()
 		}
 	}
 	
-	ChassisCtrl.vx *=2;
-	ChassisCtrl.vy *=2;
-	ChassisCtrl.wz *=2;
+	ChassisCtrl.vx *=3;
+	ChassisCtrl.vy *=3;
+	ChassisCtrl.wz *=3;
 }
+
 
 void ChassisControlLoop()
 {
@@ -149,6 +145,7 @@ void ChassisControlLoop()
 		{
 			ChassisCtrl.Current[i] =  PID_calc(&ChassisCtrl.XYPid[i], ChassisCtrl.Motor[i]->speed_rpm * 0.000415809748903494517209f, ChassisCtrl.WheelSpeed[i]);
 		}
+		
 	}
 }
 

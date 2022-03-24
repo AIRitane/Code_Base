@@ -48,4 +48,5 @@ typedef struct
 }ChassisCtrl_t;
 
 extern ChassisCtrl_t ChassisCtrl;
+void ChassisControlLoop();
 #endif

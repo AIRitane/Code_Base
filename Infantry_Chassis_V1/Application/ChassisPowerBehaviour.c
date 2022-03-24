@@ -40,7 +40,7 @@ void ChassisPowerInit();
 void ChassisBufferEnerge();
 void CapCharge(float Percentage);
 void ChassisReduceRate();
-void GetSupKp(ChassisCtrl_t *ChassisCtrl);
+uint8_t GetSupKp(ChassisCtrl_t *ChassisCtrl);
 void ChassisPowerControl(ChassisCtrl_t *ChassisCtrl);
 
 
@@ -57,7 +57,6 @@ void ChassisPowerInit()
 	{
 		remain_current = 0;
 	}
-	total_current = 0;
 	total_current_limit = 0;
 }
 void ChassisBufferEnerge()
@@ -153,78 +152,50 @@ PowerControlError:
 	}
 }
 
-float currut;
-void GetSupKp(ChassisCtrl_t *ChassisCtrl)
+static int Counter = 0;
+uint8_t GetSupKp(ChassisCtrl_t *ChassisCtrl)
 {
-	float KpW = 0,KpEi = 0;
+	total_current = 0 ;
 	
 	for(int i=0;i<4;i++)
 	{
 		total_current += fabs(ChassisCtrl->Current[i]);
 	}
-		
+
 	if(total_current > total_current_limit)
     {
-			if(ChassisCtrl->WheelSpeed[0] == 0 &&
-				ChassisCtrl->WheelSpeed[1] == 0 &&
-				ChassisCtrl->WheelSpeed[2] == 0 &&
-				ChassisCtrl->WheelSpeed[3] == 0)
-			//这种情况必须不应该出现，因为添加了缓冲函数，若出现，不管电压，直接使用超级电容
-			//即使疲软，也没办法
+		SupKp = total_current_limit/total_current;
+		for(int i=0;i<4;i++)
+		{
+			ChassisCtrl->WheelSpeed[i] *= SupKp;
+		}
+		ChassisControlLoop();
+		Counter++;
+		if(Counter > 3)
+		{
+			Counter  = 0;
+			for(int i=0;i<4;i++)
 			{
-				TestLedError();
+				ChassisCtrl->Current[i] *= SupKp;
 			}
-			else
-			{
-				for(int i = 0; i < 4; i++)
-				{
-					if(ChassisCtrl->XYPid[i].error[0]>0)
-					{
-						KpEi += (ChassisCtrl->Motor[i]->speed_rpm * 0.000415809748903494517209f)* ChassisCtrl->XYPid[i].Kp;
-						KpW += ChassisCtrl->WheelSpeed[i] * ChassisCtrl->XYPid[i].Kp;
-					}
-					if(ChassisCtrl->XYPid[i].error[0]<=0)
-					{
-						KpEi -= (ChassisCtrl->Motor[i]->speed_rpm * 0.000415809748903494517209f)* ChassisCtrl->XYPid[i].Kp;
-						KpW -= ChassisCtrl->WheelSpeed[i]* ChassisCtrl->XYPid[i].Kp;
-					}
-				}
-				
-			}
-		SupKp = (KpEi + total_current_limit)/KpW;
+			return 0;
+		}
+		return 1;
     }
 	else
 	{
+		Counter = 0;
 		SupKp = 1;
+		return 0;
 	}
 }
 
-float copy;
+
 void ChassisPowerControl(ChassisCtrl_t *ChassisCtrl)
 {
 	ChassisPowerInit();
 	ChassisBufferEnerge();
 	CapCharge(0.5);
 	ChassisReduceRate();
-	GetSupKp(ChassisCtrl);
-	
-	
-//	float KpW = 0,KpEi = 0;
-//	for(int i = 0; i < 4; i++)
-//				{
-//					if(ChassisCtrl->XYPid[i].error[0]>0)
-//					{
-//						KpEi += (ChassisCtrl->Motor[i]->speed_rpm * 0.000415809748903494517209f)* ChassisCtrl->XYPid[i].Kp;
-//						KpW += ChassisCtrl->WheelSpeed[i] * ChassisCtrl->XYPid[i].Kp;
-//					}
-//					if(ChassisCtrl->XYPid[i].error[0]<=0)
-//					{
-//						KpEi -= (ChassisCtrl->Motor[i]->speed_rpm * 0.000415809748903494517209f)* ChassisCtrl->XYPid[i].Kp;
-//						KpW -= ChassisCtrl->WheelSpeed[i]* ChassisCtrl->XYPid[i].Kp;
-//					}
-//				}
-//				
-//			
-//			currut = (KpW - KpEi);
-//			copy = total_current;
+	while(GetSupKp(ChassisCtrl));
 }
