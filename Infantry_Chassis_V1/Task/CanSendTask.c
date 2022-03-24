@@ -70,9 +70,14 @@ static void Can_Send(CAN_HandleTypeDef *hcan,uint32_t id,uint8_t lenth,uint8_t *
     HAL_CAN_AddTxMessage(hcan, &can_tx_message, buffer, &send_mail_box);
 }
 
+uint32_t CMSCounter = 0;
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   if (htim->Instance == TIM7) {
     HAL_IncTick();
   }
+  else if (htim->Instance == TIM3) {
+    CMSCounter++;
+  }
+  
 }

@@ -45,7 +45,9 @@ typedef struct
 	pid_type_def WZPid;
 	float Current[4];
 	float WheelSpeed[4];
+	int BukPowerEn;
 }ChassisCtrl_t;
 
 extern ChassisCtrl_t ChassisCtrl;
+void ChassisControlLoop();
 #endif

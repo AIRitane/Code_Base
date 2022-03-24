@@ -1,8 +1,22 @@
+/*
+* 目前为了实现超级电容的自动化控制，控制参考点如下：
+* 1. 电流值超过限制条件，即电流值不够使用；
+* 2. 输入源的切换需要间隔一定时间，但是电容电量过低切换电池必须马上执行；
+* 3. 电量需要高于14.5V
+* 4. 需要在UI上绘制超级电容的电量状况与飞坡电量最低限制，以及飞坡的起始冲刺距离
+* 说明待测参数：
+* 1.电压上限与电压下限的确定
+* 2.飞坡最低电量与冲刺距离的测定
+* 3.间隔时间的确定，暂定100ms
+*/
+
+
 #include "CMSInterface.h"
 #include "gpio.h"
 #include "gpio.h"
 #include "usart.h"
 #include "ChassisTask.h"
+#include "CanSendTask.h"
 
 //以下几个参数起到通信频率控制的作用
 //参数单位是chassis_task的任务节拍
@@ -21,8 +35,9 @@ RTULocalMasterType rtuMaster;
 ObjAccessInfo hgraInfo;
 RTUAccessedSlaveType rtuSlave;
 CMS_Handler CMS_Hub;
-float CMS_scale;
-// uint16_t LimitCurrent;
+
+
+
 //函数指针结构体，内存有需要读取的数据的数据读取函数
 void *ReadCommandList[] = {	//USER_ReadErrorCode,	//0
 												USER_ReadPowerState,		//1
@@ -117,7 +132,6 @@ bool PowerState ;
 uint8_t CMS_Route_ref;
 /******************** The end ********************/
 
-
 /****************主控板和超级电容主控通信底层驱动*******************/
 void APP_BatteryCombineBuckBoost2(void)
 {
@@ -155,66 +169,57 @@ void APP_BatteryCombineBuckBoost2(void)
 /****************发送控制指令和读取电容数据 begin *****************/
 	if(CMS_Hub.Send_Flag)
 	{
-		//ParsingSlaveRespondMessage(CMS_Hub.LocalMaster,CMS_Hub.RecMas,CMS_Hub.TxMas);
 		if(CMS_Hub.SwitchCount%WAITINGGap==WAITINGGap1P)		//控制与modbus从机的通信频率
 		{
-//		  if(chassis_move.buk_power_en == 1)					//当选择功率级使能时，给超级电容充电
-//		  {
-//			if(CoilStatus[Power_EN] == false)					//比赛期间默认供电开启，仅当掉电之后重新发送该命令
-//			{
-//				CMS_Hub.Next_Command = CommandList[0];			//默认上电开启超级充电，也即功率级使能	
-//				CMS_Hub.Next_Command();
-////				Error_Code = 1;						
-//				CMS_Hub.Send_Flag = 0;
-//			}
+		  if(ChassisCtrl.BukPowerEn == 1)	
+		  {
+			if(CoilStatus[Power_EN] == false)					//比赛期间默认供电开启，仅当掉电之后重新发送该命令
+			{
+				CMS_Hub.Next_Command = CommandList[0];			//默认上电开启超级充电，也即功率级使能	
+				CMS_Hub.Next_Command();				
+				CMS_Hub.Send_Flag = 0;
+			}
 			
-//			
-//			if( CapChageVoltage >= 14.0f ) 		//只有电容电压大于14V时才能选择使用超级电容
-//			{
-//				CMS_scale = 1;
-//				
-//			if(CMS_Hub.power_routin == CMS_PR_BattDirect)		
-//				{
-//					if(CMS_Hub.Route_ref == CMS_PR_BuckBoost){
-//						CMS_Hub.Next_Command = CommandList[2];	
-//						CMS_Hub.Next_Command();
-////							Error_Code = 3;
-//						CMS_Hub.Send_Flag = 0;
-//					}
-//				}
-//				
-//			else if(CMS_Hub.power_routin == CMS_PR_BuckBoost)	 
-//				{
-//					if(CMS_Hub.Route_ref == CMS_PR_BattDirect){
-//						CMS_Hub.Next_Command = CommandList[3];			
-//						CMS_Hub.Next_Command();
-////							Error_Code = 2;
-//						CMS_Hub.Send_Flag = 0;
-//						}
-//		
-//				}
-//			 }
-//			 else if(CapChageVoltage<14.0f)	//电容电压低于14V时，强制选择电池直接供电	
-//			 {	
-//				 CMS_scale = 0.6f;
-//				 
-//				if(CMS_Hub.Route_ref == CMS_PR_BuckBoost){
-//				CMS_Hub.Next_Command = CommandList[2];	
-//				CMS_Hub.Next_Command();
-//				Error_Code = 3;
-//				CMS_Hub.Send_Flag = 0;
-//				}
-//			 }
-//		  }
-//		  else if(chassis_move.buk_power_en == -1)
-//		  {
-//			 if(CoilStatus[Power_EN] == true){	
-//				CMS_Hub.Next_Command = CommandList[1];			//关闭功率级使能	
-//				CMS_Hub.Next_Command();
-////				Error_Code = 1;						
-//				CMS_Hub.Send_Flag = 0;
-//				}
-//		  }
+			if( CapChageVoltage >= 14.0f && CMSCounter >100) 		//当且仅当超过100ms才可切换为超级电容端
+			{
+				if(CMS_Hub.power_routin == CMS_PR_BattDirect)		
+				{
+					if(CMS_Hub.Route_ref == CMS_PR_BuckBoost){
+						CMSCounter = 0;
+						CMS_Hub.Next_Command = CommandList[2];	
+						CMS_Hub.Next_Command();
+						CMS_Hub.Send_Flag = 0;
+					}
+				}
+				
+				else if(CMS_Hub.power_routin == CMS_PR_BuckBoost)	 
+				{
+					if(CMS_Hub.Route_ref == CMS_PR_BattDirect){
+						CMSCounter = 0;
+						CMS_Hub.Next_Command = CommandList[3];			
+						CMS_Hub.Next_Command();
+						CMS_Hub.Send_Flag = 0;
+					}
+				}
+			 }
+			 else if(CapChageVoltage<14.0f)	//电容电压低于14V时，强制选择电池直接供电	
+			 {	
+				if(CMS_Hub.Route_ref == CMS_PR_BuckBoost){
+				CMS_Hub.Next_Command = CommandList[2];	
+				CMS_Hub.Next_Command();
+				Error_Code = 3;
+				CMS_Hub.Send_Flag = 0;
+				}
+			 }
+		  }
+		  else if(ChassisCtrl.BukPowerEn == -1)
+		  {
+			 if(CoilStatus[Power_EN] == true){	
+				CMS_Hub.Next_Command = CommandList[1];			//关闭功率级使能	
+				CMS_Hub.Next_Command();			
+				CMS_Hub.Send_Flag = 0;
+				}
+		  }
 		}
 		
 		//控制电容充电电流，功率限制和超级电容的核心！

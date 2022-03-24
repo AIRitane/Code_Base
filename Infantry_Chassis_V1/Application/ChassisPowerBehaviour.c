@@ -1,7 +1,5 @@
 /*
 * 该代码仅测试了在60W的限制下的电流最大值，250缓存以及更高的电压都并未测试
-*
-*
 */
 
 #include "ChassisPowerBehaviour.h"
@@ -40,7 +38,7 @@ void ChassisPowerInit();
 void ChassisBufferEnerge();
 void CapCharge(float Percentage);
 void ChassisReduceRate();
-void GetSupKp(ChassisCtrl_t *ChassisCtrl);
+uint8_t GetSupKp(ChassisCtrl_t *ChassisCtrl);
 void ChassisPowerControl(ChassisCtrl_t *ChassisCtrl);
 
 
@@ -57,7 +55,6 @@ void ChassisPowerInit()
 	{
 		remain_current = 0;
 	}
-	total_current = 0;
 	total_current_limit = 0;
 }
 void ChassisBufferEnerge()
@@ -153,41 +150,65 @@ PowerControlError:
 	}
 }
 
-
-void GetSupKp(ChassisCtrl_t *ChassisCtrl)
+static int Counter = 0;
+void CMSControl()
 {
-	float KpW = 0,KpEi = 0;
+	uint32_t DelCurrent = 0;
+	
+	DelCurrent = total_current - total_current_limit;
+	if(DelCurrent > total_current_limit*1.5 && Counter == 0)//电流超限1.5倍,同时只看第一次计算
+	{
+		total_current_limit = BUFFER_TOTAL_CURRENT_LIMIT + POWER_TOTAL_CURRENT_LIMIT;
+		CMS_Hub.power_routin = CMS_PR_BuckBoost;
+	}
+	else if(Counter == 0)
+	{
+		CMS_Hub.power_routin = CMS_PR_BattDirect;
+	}
+}
+
+/*
+* 该函数通过直接砍输入值进行电流值的放缩，同时限制最多运行3次
+*/
+
+uint8_t GetSupKp(ChassisCtrl_t *ChassisCtrl)
+{
+	total_current = 0 ;
+	
 	for(int i=0;i<4;i++)
 	{
 		total_current += fabs(ChassisCtrl->Current[i]);
 	}
-		
-	if(fabs(total_current) > total_current_limit)
+	
+	CMSControl();
+	if(total_current > total_current_limit)
     {
-			if(ChassisCtrl->WheelSpeed[0] == 0 &&
-				ChassisCtrl->WheelSpeed[1] == 0 &&
-				ChassisCtrl->WheelSpeed[2] == 0 &&
-				ChassisCtrl->WheelSpeed[3] == 0)
-			//这种情况必须不应该出现，因为添加了缓冲函数，若出现，不管电压，直接使用超级电容
-			//即使疲软，也没办法
+		SupKp = total_current_limit/total_current;
+		for(int i=0;i<4;i++)
+		{
+			ChassisCtrl->WheelSpeed[i] *= SupKp;
+		}
+		ChassisControlLoop();
+		Counter++;
+		if(Counter > 3)
+		{
+			Counter  = 0;
+			for(int i=0;i<4;i++)
 			{
-				TestLedError();
+				ChassisCtrl->Current[i] *= SupKp;
 			}
-			else
-			{
-				for(int i = 0; i < 4; i++)
-				{
-					KpEi += ChassisCtrl->XYPid->Kp * ChassisCtrl->XYPid->error[0];
-					KpW += ChassisCtrl->XYPid->Kp * ChassisCtrl->WheelSpeed[i];
-				}
-			}
-		SupKp = (total_current_limit+KpEi)/KpW;
+			return 0;
+		}
+		return 1;
     }
 	else
 	{
+		Counter = 0;
 		SupKp = 1;
+		return 0;
 	}
 }
+
 
 void ChassisPowerControl(ChassisCtrl_t *ChassisCtrl)
 {
@@ -195,5 +216,5 @@ void ChassisPowerControl(ChassisCtrl_t *ChassisCtrl)
 	ChassisBufferEnerge();
 	CapCharge(0.5);
 	ChassisReduceRate();
-	GetSupKp(ChassisCtrl);
+	while(GetSupKp(ChassisCtrl));
 }
